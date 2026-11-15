@@ -1,0 +1,34 @@
+MONDGRUFT
+=========
+
+Ein düsterer Pixel-Dungeon-Crawler in Echtzeit. Dorf, drei zufällige Etagen, ein Boss.
+
+SCHNELLSTART
+- Mondgruft.html öffnen (Doppelklick, in Chrome, Edge, Firefox oder Safari). Das ist das ganze Spiel in einer Datei.
+- Der Spielstand liegt im Browser dieses Geräts. Löschst du die Browserdaten, ist er weg.
+
+XBOX-CONTROLLER
+- Per Bluetooth koppeln (Windows, Mac, iPad, Android) oder per USB anstecken, dann im Spiel eine Taste drücken.
+- Linker Stick laufen, rechter Stick zielen, X oder RB Hieb, B Rolle, Y oder RT Pistole,
+  LB Blutfläschchen, LT Blutwelle, A öffnen und sprechen, Start Pause, Zurück Ton.
+
+TABLET
+- Im Querformat erscheinen die Tasten am Bildschirmrand, ein Controller geht trotzdem.
+- Als App auf dem Startbildschirm brauchst du die Dateien auf einem Webserver (siehe unten).
+
+ALS APP INSTALLIEREN (PWA, läuft danach auch ohne Internet)
+Alle Dateien dieses Ordners müssen zusammen auf einen Webserver mit https. Am einfachsten geht das kostenlos mit GitHub Pages:
+ 1. Neues Repository auf github.com anlegen.
+ 2. Alle Dateien aus diesem Ordner hochladen (index.html, sw.js, manifest.webmanifest und die zwei Icons).
+ 3. Im Repository: Settings, Pages, Branch "main", Ordner "/ (root)", speichern.
+ 4. Nach einer Minute die angezeigte Adresse auf dem Tablet öffnen.
+ 5. iPad (Safari): Teilen-Symbol, "Zum Home-Bildschirm". Android (Chrome): Menü, "App installieren".
+Danach startet Mondgruft im Vollbild wie eine normale App.
+
+ECHTE APK oder STORE-APP
+Gib auf pwabuilder.com die Adresse deiner gehosteten Version ein. Dort bekommst du ein Android-Paket (APK/AAB) und ein iOS-Projekt.
+iOS-Apps brauchen ein Apple-Entwicklerkonto und Xcode.
+
+DATEIEN
+- Mondgruft.html und index.html: das Spiel (beide sind identisch)
+- manifest.webmanifest, sw.js, icon-192.png, icon-512.png: nötig für die App-Installation
