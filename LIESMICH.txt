@@ -1,7 +1,8 @@
 MONDGRUFT
 =========
 
-Ein düsterer Pixel-Dungeon-Crawler in Echtzeit. Dorf, drei zufällige Etagen, ein Boss.
+Ein düsterer Pixel-Dungeon-Crawler in Echtzeit. Dorf, zwei Gebiete (Gruft und Friedhof) mit je drei zufälligen Etagen.
+Auf jeder Etage trägt ein Wächter den Schlüssel zum Siegeltor. Hinter dem letzten Tor wartet der Herr des Gebiets.
 
 SCHNELLSTART
 - Mondgruft.html öffnen (Doppelklick, in Chrome, Edge, Firefox oder Safari). Das ist das ganze Spiel in einer Datei.
@@ -10,7 +11,14 @@ SCHNELLSTART
 XBOX-CONTROLLER
 - Per Bluetooth koppeln (Windows, Mac, iPad, Android) oder per USB anstecken, dann im Spiel eine Taste drücken.
 - Linker Stick laufen, rechter Stick zielen, X oder RB Hieb, B Rolle, Y oder RT Pistole,
-  LB Blutfläschchen, LT Blutwelle, A öffnen und sprechen, Start Pause, Zurück Ton.
+  LB Blutfläschchen, LT Blutwelle, A öffnen, sprechen und Tor aufschließen, Zurück (View) Beutel, Start Pause.
+
+TASTATUR
+- WASD laufen, Leertaste Hieb, Shift Rolle, F Pistole, Q Fläschchen, R Blutwelle, E öffnen und sprechen, I oder Tab Beutel, P Pause, M Ton.
+
+SPIELABLAUF
+- Im Dorf lernt der Trainer dich Fertigkeiten (Skilltree, bezahlt mit Mondsplittern). Am Mondtor wählst du Gruft oder Friedhof.
+- Artefakte landen im Beutel (12 Plätze, 3 davon kannst du ausrüsten). Sie gelten nur für die laufende Jagd.
 
 TABLET
 - Im Querformat erscheinen die Tasten am Bildschirmrand, ein Controller geht trotzdem.
