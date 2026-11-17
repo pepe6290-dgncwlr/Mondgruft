@@ -1,7 +1,8 @@
 MONDGRUFT
 =========
 
-Ein düsterer Pixel-Dungeon-Crawler in Echtzeit. Dorf, zwei Gebiete (Gruft und Friedhof) mit je drei zufälligen Etagen.
+Ein düsterer Pixel-Dungeon-Crawler in Echtzeit. Dorf Mondhain und fünf Gebiete in vier Stufen:
+Gruft und Friedhof (Stufe 1), Farmland (Stufe 2), Zerfallenes Dorf (Stufe 3), Große Kapelle (Stufe 4, sechs Ebenen).
 Auf jeder Etage trägt ein Wächter den Schlüssel zum Siegeltor. Hinter dem letzten Tor wartet der Herr des Gebiets.
 
 SCHNELLSTART
@@ -17,7 +18,13 @@ TASTATUR
 - WASD laufen, Leertaste Hieb, Shift Rolle, F Pistole, Q Fläschchen, R Blutwelle, E öffnen und sprechen, I oder Tab Beutel, P Pause, M Ton.
 
 SPIELABLAUF
-- Im Dorf lernt der Trainer dich Fertigkeiten (Skilltree, bezahlt mit Mondsplittern). Am Mondtor wählst du Gruft oder Friedhof.
+- Im Dorf lernt der Trainer dich Fertigkeiten (Skilltree, bezahlt mit Mondsplittern). Stufe 1 schaltet Fertigkeit 1 und 2 frei,
+  Stufe 2 (Farmland) die dritte, Stufe 3 (Zerfallenes Dorf) die vierte. Am Mondtor wählst du dein Gebiet.
+- Das Farmland öffnet sich, sobald du Gruft oder Friedhof geschafft hast, das Zerfallene Dorf nach dem Farmland.
+  Der Werwolf lässt sich nur mit Kugeln verletzen. Hinter ihm liegt eine zweite Tür: der Eingang zur Großen Kapelle,
+  der danach auch vom Mondtor aus (Wegpunkt) erreichbar ist.
+- Nach den Priestern der Großen Kapelle zieht ein Waffenhändler ins Haus unten links (Axt, Sägenschwert, Peitsche,
+  doppelläufige Pistole, große Munitionstasche). Der Chronist rechts im Dorf bietet dann Neues Spiel+ (bis Stufe 5) an.
 - Artefakte landen im Beutel (12 Plätze, 3 davon kannst du ausrüsten). Sie gelten nur für die laufende Jagd.
 
 TABLET
