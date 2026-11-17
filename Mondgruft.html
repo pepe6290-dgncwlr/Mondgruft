@@ -145,6 +145,11 @@ body.nav .btn:focus,body.nav .card:focus{outline:2px solid var(--brass);outline-
 .node.avail{border-color:var(--brass)}
 .node.avail.poor .cost{color:#b5566a}
 .node.locked{opacity:.42;cursor:default}
+.node.veil{opacity:.82}
+.node.veil h4,.node.veil p{filter:blur(clamp(2px,.55cqw,5px));user-select:none;pointer-events:none}
+.node.veil .cost{color:var(--dim)}
+.node.tier{border-color:#7a2a36;background:rgba(90,16,28,.22)}
+.node.tier .cost{color:#d0505f}
 .node:not(.locked):hover{background:var(--blood)}
 .node:not(:first-of-type)::before{content:'';position:absolute;left:50%;top:-.9cqw;width:1px;height:.9cqw;background:var(--line)}
 .node:focus-visible,.slot:focus-visible,.bagitem .x:focus-visible{outline:2px solid var(--brass);outline-offset:2px}
@@ -2005,7 +2010,7 @@ AI.boss=(e,dt)=>{
       if(e.cd<=0){
         const r=Math.random();
         const dogs=e.kit==='farmer'?enemies.filter(o=>o.type==='mutdog'&&!o.dead).length:9;
-        if(dogs<(p2?4:3)&&r<.45&&e.d>34)bossStart(e,'call');
+        if(dogs<(p2?4:3)&&r<.5)bossStart(e,'call');
         else if(e.d<56)bossStart(e,r<.6?'claw':'slam');
         else if(e.d<175)bossStart(e,(r<.5||!e.vol)?'slam':'volley');
         else e.cd=.3;
@@ -2926,6 +2931,30 @@ function hdBar(x,y,w,h,back,segs){
   ctx.restore();
   rrect(x,y,w,h,r);ctx.lineWidth=.6;ctx.strokeStyle='rgba(0,0,0,.9)';ctx.stroke();
 }
+/* Halbkreis-Leiste: läuft von links über die Kuppel nach rechts. segs = [[Anteil,Farbe,Glanz]] */
+function arcBar(cx,cy,R,th,span,back,segs){
+  const a0=Math.PI;
+  ctx.lineCap='butt';
+  ctx.beginPath();ctx.arc(cx,cy,R,a0,a0+span);ctx.lineWidth=th+1.3;ctx.strokeStyle='rgba(0,0,0,.92)';ctx.stroke();
+  ctx.beginPath();ctx.arc(cx,cy,R,a0,a0+span);ctx.lineWidth=th;ctx.strokeStyle=back;ctx.stroke();
+  let off=0;
+  for(const sg of segs){
+    const f=Math.max(0,Math.min(1-off,sg[0]));
+    if(f>.002){
+      ctx.beginPath();ctx.arc(cx,cy,R,a0+off*span,a0+(off+f)*span);ctx.lineWidth=th;ctx.strokeStyle=sg[1];ctx.stroke();
+      if(sg[2]){ctx.beginPath();ctx.arc(cx,cy,R+th*.27,a0+off*span,a0+(off+f)*span);ctx.lineWidth=th*.34;ctx.strokeStyle=sg[2];ctx.stroke()}
+    }
+    off+=f;
+  }
+}
+function bagIcon(x,y,w,h){
+  ctx.lineWidth=.6;ctx.strokeStyle='rgba(0,0,0,.95)';
+  ctx.beginPath();ctx.arc(x+w/2,y+3.2,w*.27,Math.PI,2*Math.PI);ctx.lineWidth=.9;ctx.strokeStyle='#b39254';ctx.stroke();   // Henkel
+  ctx.lineWidth=.6;ctx.strokeStyle='rgba(0,0,0,.95)';
+  rrect(x,y+3,w,h-3,2);ctx.fillStyle='#6b4a2e';ctx.fill();ctx.stroke();                                                  // Körper
+  rrect(x,y+2.6,w,h*.42,1.6);ctx.fillStyle='#8a6038';ctx.fill();ctx.stroke();                                             // Klappe
+  ctx.fillStyle='#e9c46a';ctx.fillRect(x+w/2-1,y+h*.5,2,2.2);                                                             // Schnalle
+}
 function gem(x,y,r,col){
   ctx.beginPath();ctx.moveTo(x,y-r);ctx.lineTo(x+r,y);ctx.lineTo(x,y+r);ctx.lineTo(x-r,y);ctx.closePath();
   ctx.fillStyle=col;ctx.fill();ctx.lineWidth=.6;ctx.strokeStyle='rgba(0,0,0,.9)';ctx.stroke();
@@ -2955,35 +2984,50 @@ function drawHUD(tm){
   }finally{ctx=main}
 }
 function hud(tm){
-  const p=P,x=10;
+  const p=P;let hudTop=H-40;
   ctx.font=HF.ui;
-  // Linke Tafel: Gesundheit, Ausdauer, Echo, Vorräte, Artefakte
-  const hw=Math.round(p.maxhp*.9),sw=Math.round(p.maxStam*.72),pw=Math.max(hw,sw,100)+12;
-  panel(4,4,pw,70);
-  hdBar(x,9,hw,7,'#2a0f14',[[p.hp/p.maxhp,'#a3222f','#d04552'],[Math.min(p.regain,p.maxhp-p.hp)/p.maxhp,'#d98a3d']]);
-  ctx.font=HF.sm;textO(String(Math.ceil(Math.max(0,p.hp))),x+hw-2,9.6,'#f3e9dc','right');
-  hdBar(x,19,sw,4,'#1b1b12',[[p.stam/p.maxStam,p.stam<18?'#6d6d4a':'#a3a35a']]);
-  const full=p.echo>=100;
-  hdBar(x,26,62,3.6,'#10141f',[[p.echo/100,full?(Math.floor(tm*6)%2?'#d6e0f5':'#8aa2d6'):'#6f86b3']]);
-  if(full){ctx.font=HF.sm;textO('R',x+66,25.2,'#d6e0f5')}
+  // Splitter oben links
   ctx.font=HF.ui;
-  ctx.drawImage(SPR.vial,x-1,33,8,8);textO('x'+p.vials,x+8,34,'#ddd6c6');
-  ctx.drawImage(SPR.ammo,x+27,33,8,8);textO('x'+p.ammo,x+36,34,'#ddd6c6');
+  const shTxt='Splitter '+Math.floor(L.hub?SAVE.shards:G.runShards),shW=ctx.measureText(shTxt).width+17;
+  panel(4,4,shW,12);
+  gem(9.4,10,2.5,'#aebbd3');textO(shTxt,14,6.6,'#aebbd3');
+
+  // Unterer Rand, mittig: links Beutel mit Vorräten, rechts Leben und Ausdauer als parallele Halbkreise.
+  // Die Bögen wachsen mit dem Höchstwert; ab 110 ist es ein voller Halbkreis, danach wächst der Radius.
+  const cy=H-11,REF=110,R0=26,thH=4.6,thS=3.4,thE=2.4;
+  const sc=Math.max(1,p.maxhp/REF,p.maxStam/REF);
+  const Ro=R0*sc,Ri=Ro-(thH/2+thS/2+1.3),Re=Ri-(thS/2+thE/2+1.3);
+  const spH=Math.PI*Math.min(1,p.maxhp/REF),spS=Math.PI*Math.min(1,p.maxStam/REF);
+  const lw=58,gap=9,plate=Ro+thH/2+1.6,tot=lw+gap+plate*2,lx=Math.round((W-tot)/2),dcx=lx+lw+gap+plate;
+  hudTop=Math.max(cy-40,cy-plate)-3;
+  // linke Tafel
+  panel(lx-3,cy-41,lw+6,51);
+  ctx.font=HF.ui;
+  ctx.drawImage(SPR.vial,lx,cy-39,8,8);textO('x'+p.vials,lx+11,cy-38.6,'#ddd6c6');
+  ctx.drawImage(SPR.ammo,lx,cy-30,8,8);textO('x'+p.ammo,lx+11,cy-29.6,'#ddd6c6');
   if(!L.hub){
     ctx.globalAlpha=p.bag.keys>0?1:.35;
-    ctx.drawImage(SPR.key,x+57,32.5,6,7);ctx.globalAlpha=1;
-    textO('x'+p.bag.keys,x+65,34,p.bag.keys>0?'#e9c46a':'#8f8a9c');
+    ctx.drawImage(SPR.key,lx+1,cy-21.5,6,7);ctx.globalAlpha=1;
+    textO('x'+p.bag.keys,lx+11,cy-20.6,p.bag.keys>0?'#e9c46a':'#8f8a9c');
   }
-  gem(x+3,46.2,2.6,'#aebbd3');
-  textO('Splitter '+Math.floor(L.hub?SAVE.shards:G.runShards),x+9,43.6,'#aebbd3');
+  bagIcon(lx,cy-11,12,10);
   for(let i=0;i<EQ_SLOTS;i++){
-    const a=artById(p.bag.eq[i]),sx=x+i*12;
-    rrect(sx,53,10,10,1.6);ctx.fillStyle='rgba(255,255,255,.04)';ctx.fill();
+    const a=artById(p.bag.eq[i]),sx=lx+17+i*13;
+    rrect(sx,cy-10.5,11,9.5,1.6);ctx.fillStyle='rgba(255,255,255,.04)';ctx.fill();
     ctx.lineWidth=.6;ctx.strokeStyle=a?'#b39254':'#2f2c3a';ctx.stroke();
-    if(a)gem(sx+5,58,3,a.col);
+    if(a)gem(sx+5.5,cy-5.7,3,a.col);
   }
   ctx.font=HF.sm;
-  textO(bagKey()+'  Beutel '+p.bag.arts.length+'/'+BAG_CAP,x+40,55.4,'#8f8a9c');
+  textO(bagKey()+'  Beutel '+p.bag.arts.length+'/'+BAG_CAP,lx,cy+1.4,'#8f8a9c');
+  // Kuppel: Leben (außen), Ausdauer, Blutwelle (innen)
+  ctx.beginPath();ctx.arc(dcx,cy,plate,Math.PI,2*Math.PI);ctx.closePath();
+  ctx.fillStyle='rgba(8,6,14,.66)';ctx.fill();ctx.lineWidth=.6;ctx.strokeStyle='#3a2a30';ctx.stroke();
+  arcBar(dcx,cy,Ro,thH,spH,'#2a0f14',[[p.hp/p.maxhp,'#a3222f','#d04552'],[Math.min(p.regain,p.maxhp-p.hp)/p.maxhp,'#d98a3d']]);
+  arcBar(dcx,cy,Ri,thS,spS,'#1b1b12',[[p.stam/p.maxStam,p.stam<18?'#6d6d4a':'#a3a35a','#cfcf86']]);
+  const full=p.echo>=100;
+  arcBar(dcx,cy,Re,thE,spS,'#10141f',[[p.echo/100,full?(Math.floor(tm*6)%2?'#d6e0f5':'#8aa2d6'):'#6f86b3']]);
+  ctx.font=HF.ui;textO(String(Math.ceil(Math.max(0,p.hp))),dcx,cy-12,'#f3e9dc','center');
+  if(full){ctx.font=HF.sm;textO('R',dcx,cy-5.4,'#d6e0f5','center')}
 
   // Minikarte, Ebene und Ziel
   if(L.miniDirty)redrawMini();
@@ -3004,14 +3048,14 @@ function hud(tm){
   }
   if(ngLv()){ctx.font=HF.sm;textO('Neues Spiel+ '+ngLv(),W-6,ty+(L.hub?11:20),'#d98a3d','right')}
 
-  // Boss
+  // Boss: oben in der Mitte
   const bl=enemies.filter(e=>e.boss&&!e.dead&&e.aggro).slice(0,2);
   if(bl.length){
-    const two=bl.length>1,bw=two?150:220,gap=12,tot=two?bw*2+gap:bw,bx0=(W-tot)/2,by=H-15;
-    panel(bx0-8,by-16,tot+16,27,'#5a1a22');
+    const two=bl.length>1,bw=two?104:200,gap=10,tot=two?bw*2+gap:bw,bx0=Math.round((W-tot)/2),by=18;
+    panel(bx0-8,4,tot+16,26,'#5a1a22');
     bl.forEach((b,i)=>{
       const bx=bx0+i*(bw+gap);
-      ctx.font=HF.disp;textO(b.name||'Die Mondbestie',bx+bw/2,by-14,'#ddd6c6','center');
+      ctx.font=HF.disp;textO(b.name||'Die Mondbestie',bx+bw/2,5.4,'#ddd6c6','center');
       hdBar(bx,by,bw,5,'#2a0f14',[[b.hp/b.maxhp,'#8e1f2b','#c8323f']]);
     });
   }
@@ -3033,13 +3077,11 @@ function hud(tm){
     textO(k,px-w/2+3+kw/2,py-.6,'#120d08','center');
     textO(lab,px-w/2+kw+8,py-.6,'#e9c46a');
   }
-  // Sprechblase
-  let sayTop=H-6;
+  // Sprechblase: mittig im Bild
   if(G.say){
     const k=G.say,w=316,x0=(W-w)/2;
     ctx.font=HF.body;
-    const lines=wrapText(k.s,w-20),h=18+lines.length*9.8,y0=H-h-8;
-    sayTop=y0;
+    const lines=wrapText(k.s,w-20),h=18+lines.length*9.8,y0=Math.round((H-h)/2);
     panel(x0,y0,w,h,'#8e1f2b');
     ctx.font=HF.disp;
     const nw=ctx.measureText(k.who).width+14;
@@ -3050,7 +3092,7 @@ function hud(tm){
   }
   if(G.notice){
     ctx.font=HF.ui;
-    const tw=ctx.measureText(G.notice.s).width+14,ny=sayTop-17;
+    const tw=ctx.measureText(G.notice.s).width+14,ny=hudTop-13;
     panel((W-tw)/2,ny,tw,12,'#3a4a66');
     textO(G.notice.s,W/2,ny+2.2,'#c4d2ee','center');
   }
@@ -3173,11 +3215,14 @@ function refreshSkills(focusId){
     col.appendChild(el('h3',null,br.n));
     for(const sk of SKILLS.filter(x=>x.br===br.id)){
       const st=skillState(sk),c=skillCost(sk),req=skillReq(sk);
-      const n=el('button','node '+(st==='tier'?'locked':st)+(st==='avail'&&SAVE.shards<c?' poor':''));
+      const veil=st==='locked'||st==='tier';                       // nur die nächste Fertigkeit je Zweig bleibt lesbar
+      const n=el('button','node '+(st==='tier'?'locked tier':st)+(veil?' veil':'')+(st==='avail'&&SAVE.shards<c?' poor':''));
       n.type='button';n.setAttribute('data-id',sk.id);
       n.appendChild(el('h4',null,sk.n));
       n.appendChild(el('p',null,sk.d));
-      n.appendChild(el('span','cost',st==='owned'?'Gelernt':st==='tier'?'Gesperrt · '+tierLock(sk.t):st==='locked'?'Zuerst: '+req.n:c+' Splitter'));
+      const costTxt=st==='owned'?'Gelernt':st==='tier'?'Gesperrt · '+tierLock(sk.t):st==='locked'?(skillState(req)==='avail'?'Zuerst: '+req.n:'Noch verborgen'):c+' Splitter';
+      n.appendChild(el('span','cost',costTxt));
+      if(veil)n.setAttribute('aria-label','Verborgene Fertigkeit. '+costTxt);
       n.addEventListener('click',()=>{
         if(skillState(sk)!=='avail'||SAVE.shards<skillCost(sk)){sfx('hit');return}
         SAVE.shards-=skillCost(sk);SAVE.skills[sk.id]=1;persist();sfx('pick');
