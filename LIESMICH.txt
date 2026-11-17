@@ -27,6 +27,10 @@ SPIELABLAUF
   doppelläufige Pistole, große Munitionstasche). Der Chronist rechts im Dorf bietet dann Neues Spiel+ (bis Stufe 5) an.
 - Artefakte landen im Beutel (12 Plätze, 3 davon kannst du ausrüsten). Sie gelten nur für die laufende Jagd.
 
+MUSIK
+- Hintergrundmusik: "Lamprey Choir" (3:01 min, läuft in einer Schleife mit weichem Übergang). Sie steckt in der HTML-Datei,
+  startet mit dem ersten Klick oder Tastendruck und pausiert, wenn der Tab im Hintergrund ist. Mit M oder "Ton" im Menü schaltest du alles stumm.
+
 TABLET
 - Im Querformat erscheinen die Tasten am Bildschirmrand, ein Controller geht trotzdem.
 - Als App auf dem Startbildschirm brauchst du die Dateien auf einem Webserver (siehe unten).
