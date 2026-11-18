@@ -15,7 +15,7 @@ XBOX-CONTROLLER
   LB Blutfläschchen, LT Blutwelle, A öffnen, sprechen und Tor aufschließen, Zurück (View) Beutel, Start Pause.
 
 TASTATUR
-- WASD laufen, Leertaste Hieb, Shift Rolle, F Pistole, Q Fläschchen, R Blutwelle, E öffnen und sprechen, I oder Tab Beutel, P Pause, M Ton.
+- WASD laufen, Leertaste Hieb, Shift Rolle, F Pistole, Q Fläschchen, R Blutwelle, E öffnen und sprechen, I oder Tab Beutel, P Pause, M Ton, Pausenmenü: Fortsetzen, Beutel, Einstellungen, Titelbildschirm.
 
 SPIELABLAUF
 - Im Dorf lernt der Trainer dich Fertigkeiten (Skilltree, bezahlt mit Mondsplittern). Stufe 1 schaltet Fertigkeit 1 und 2 frei,
@@ -29,7 +29,8 @@ SPIELABLAUF
 
 MUSIK
 - Hintergrundmusik: "Lamprey Choir" (3:01 min, läuft in einer Schleife mit weichem Übergang). Sie steckt in der HTML-Datei,
-  startet mit dem ersten Klick oder Tastendruck und pausiert, wenn der Tab im Hintergrund ist. Mit M oder "Ton" im Menü schaltest du alles stumm.
+  startet mit dem ersten Klick oder Tastendruck und pausiert, wenn der Tab im Hintergrund ist. Im Pausenmenü unter "Einstellungen" stellst du Vollbild, Ton
+  und die Musiklautstärke ein (Pfeiltasten links/rechts oder Controller regeln den Schieber), mit M schaltest du alles stumm. Die Einstellungen bleiben gespeichert.
 
 TABLET
 - Im Querformat erscheinen die Tasten am Bildschirmrand, ein Controller geht trotzdem.
